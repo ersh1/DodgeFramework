@@ -1,4 +1,4 @@
-This is a basic plugin template for use with CommonLibSSE
+A basic SKSE plugin for dodge mods.
 
 ## Requirements
 * [CMake](https://cmake.org/)
@@ -16,8 +16,9 @@ This is a basic plugin template for use with CommonLibSSE
 
 ## Building
 ```
-git clone https://github.com/Ryan-rsm-McKenzie/ExamplePlugin-CommonLibSSE
-cd ExamplePlugin-CommonLibSSE
+git clone https://github.com/ersh1/DodgeFramework
+cd DodgeFramework
 git submodule update --init --recursive
+git submodule update --recursive --remote
 cmake -B build -S .
 ```

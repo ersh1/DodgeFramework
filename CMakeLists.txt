@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.20)
 
 # ---- Options ----
 
-option(COPY_BUILD "Copy the build output to the Skyrim directory." OFF)
+option(COPY_BUILD "Copy the build output to the Skyrim directory." ON)
 
 # ---- Cache build vars ----
 
@@ -12,7 +12,7 @@ macro(set_from_environment VARIABLE)
 	endif ()
 endmacro()
 
-set_from_environment(Skyrim64Path)
+set_from_environment(CompiledPluginsPath)
 set_from_environment(VCPKG_ROOT)
 
 if (DEFINED VCPKG_ROOT)
@@ -31,7 +31,7 @@ set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>" CACHE STR
 # ---- Project ----
 
 project(
-	ExampleProject
+	DodgeFramework
 	VERSION 1.0.0
 	LANGUAGES CXX
 )
@@ -86,8 +86,13 @@ find_package(spdlog REQUIRED CONFIG)
 # ---- Add source files ----
 
 set(SOURCES
+	src/Events.cpp
+	src/Events.h
 	src/main.cpp
+	src/Papyrus.cpp
+	src/Papyrus.h
 	src/PCH.h
+	src/Utils.h
 )
 
 source_group(
@@ -197,17 +202,17 @@ target_precompile_headers(
 # ---- Post build ----
 
 if (COPY_BUILD)
-	if (DEFINED Skyrim64Path)
+	if (DEFINED CompiledPluginsPath)
 		add_custom_command(
 			TARGET ${PROJECT_NAME}
 			POST_BUILD
-			COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${PROJECT_NAME}> ${Skyrim64Path}/Data/SKSE/Plugins/
-			COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_PDB_FILE:${PROJECT_NAME}> ${Skyrim64Path}/Data/SKSE/Plugins/
+			COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${PROJECT_NAME}> ${CompiledPluginsPath}/SKSE/Plugins/
+			COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_PDB_FILE:${PROJECT_NAME}> ${CompiledPluginsPath}/SKSE/Plugins/
 		)
 	else ()
 		message(
 			WARNING
-			"Variable Skyrim64Path is not defined. Skipping post-build copy command."
+			"Variable CompiledPluginsPath is not defined. Skipping post-build copy command."
 		)
 	endif ()
 endif ()
