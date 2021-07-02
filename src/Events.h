@@ -27,7 +27,8 @@ namespace Events
 		{
 			kInvalid = static_cast<uint32_t>(-1),
 			kKeyboardOffset = 0,
-			kMouseOffset = 256
+			kMouseOffset = 256,
+			kGamepadOffset = 266
 		};
 
 		InputEventHandler();
@@ -38,8 +39,10 @@ namespace Events
 		InputEventHandler& operator=(const InputEventHandler&) = delete;
 		InputEventHandler& operator=(InputEventHandler&&) = delete;
 
+		std::uint32_t GetGamepadIndex(RE::BSWin32GamepadDevice::Key a_key);
+
 		mutable Lock _lock;
-		uint32_t _key = 47; // temp
+		uint32_t _key;
 	};
 
 	void SinkEventHandlers();
