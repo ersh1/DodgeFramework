@@ -88,9 +88,13 @@ find_package(spdlog REQUIRED CONFIG)
 set(SOURCES
 	src/Events.cpp
 	src/Events.h
+	src/Hooks.cpp
+	src/Hooks.h
 	src/main.cpp
 	src/Papyrus.cpp
 	src/Papyrus.h
+	src/Settings.cpp
+	src/Settings.h
 	src/PCH.h
 	src/Utils.h
 )

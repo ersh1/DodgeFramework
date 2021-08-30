@@ -1,33 +1,27 @@
 #include "Papyrus.h"
 
 #include "Events.h"
+#include "Settings.h"
 
 namespace Papyrus
 {
-	uint32_t Dodge::GetKey(RE::StaticFunctionTag*)
+	void DodgeFramework_MCM::OnConfigClose(RE::TESQuest*)
 	{
-		auto inputHandler = Events::InputEventHandler::GetSingleton();
-		return inputHandler->GetKey();
+		Settings::ReadSettings();
 	}
 
-	void Dodge::SetKey(RE::StaticFunctionTag*, uint32_t a_key)
+	bool DodgeFramework_MCM::Register(RE::BSScript::IVirtualMachine* a_vm)
 	{
-		auto inputHandler = Events::InputEventHandler::GetSingleton();
-		inputHandler->SetKey(a_key);
-	}
+		a_vm->RegisterFunction("OnConfigClose", "DodgeFramework_MCM", OnConfigClose);
 
-	bool Dodge::Register(RE::BSScript::IVirtualMachine* a_vm)
-	{
-		a_vm->RegisterFunction("GetKey", "DodgeFramework", GetKey);
-		a_vm->RegisterFunction("SetKey", "DodgeFramework", SetKey);
-		logger::info("Registered DodgeFramework class");
+		logger::info("Registered DodgeFramework_MCM class");
 		return true;
 	}
 
 	void Register()
 	{
 		auto papyrus = SKSE::GetPapyrusInterface();
-		papyrus->Register(Dodge::Register);
+		papyrus->Register(DodgeFramework_MCM::Register);
 		logger::info("Registered papyrus functions");
 	}
 }

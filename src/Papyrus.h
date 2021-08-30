@@ -2,11 +2,10 @@
 
 namespace Papyrus
 {
-	class Dodge
+	class DodgeFramework_MCM
 	{
 	public:
-		static uint32_t GetKey(RE::StaticFunctionTag*);
-		static void SetKey(RE::StaticFunctionTag*, uint32_t a_key);
+		static void OnConfigClose(RE::TESQuest*);
 
 		static bool Register(RE::BSScript::IVirtualMachine* a_vm);
 	};

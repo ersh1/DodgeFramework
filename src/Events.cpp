@@ -1,4 +1,5 @@
 #include "Events.h"
+#include "Settings.h"
 #include "Utils.h"
 
 namespace Events
@@ -28,7 +29,7 @@ namespace Events
 		using EventType = RE::INPUT_EVENT_TYPE;
 		using DeviceType = RE::INPUT_DEVICE;
 
-		if (_key == kInvalid) {
+		if (Settings::uDodgeKey == kInvalid) {
 			return EventResult::kContinue;
 		}
 
@@ -56,6 +57,7 @@ namespace Events
 				break;
 			case DeviceType::kGamepad:
 				key = GetGamepadIndex((RE::BSWin32GamepadDevice::Key)key);
+				break;
 			default:
 				continue;
 			}
@@ -66,7 +68,7 @@ namespace Events
 				continue;
 			}
 
-			if (key == _key) {
+			if (key == Settings::uDodgeKey) {
 				Dodge();
 				break;
 			}
@@ -75,7 +77,7 @@ namespace Events
 		return EventResult::kContinue;
 	}
 
-	void InputEventHandler::Dodge()
+	void Dodge()
 	{
 		auto playerCharacter = RE::PlayerCharacter::GetSingleton();
 		auto playerControls = RE::PlayerControls::GetSingleton();
@@ -96,7 +98,7 @@ namespace Events
 			return;
 		}
 
-		auto normalizedInputDirection = Vec2Normalize(playerControls->data.moveInputVec);
+		auto normalizedInputDirection = Vec2Normalize(playerControls->data.prevMoveVec);
 		if (normalizedInputDirection.x == 0.f && normalizedInputDirection.y == 0.f)
 		{
 			animationGraph->SetGraphVariableFloat("Dodge_Angle", PI);
@@ -175,55 +177,6 @@ namespace Events
 			logger::debug("left-forward");
 		}
 	}
-
-	bool InputEventHandler::Save(const SKSE::SerializationInterface* a_intfc, uint32_t a_typeCode, uint32_t a_version)
-	{
-		Locker locker(_lock);
-
-		if (!a_intfc->OpenRecord(a_typeCode, a_version)) {
-			return false;
-		}
-
-		if (!a_intfc->WriteRecordData(_key)) {
-			return false;
-		}
-
-		return true;
-	}
-
-	bool InputEventHandler::Load(const SKSE::SerializationInterface* a_intfc)
-	{
-		Locker locker(_lock);
-
-		if (!a_intfc->ReadRecordData(_key)) {
-			return false;
-		}
-
-		return true;
-	}
-
-	void InputEventHandler::Clear()
-	{
-		Locker locker(_lock);
-		_key = kInvalid;
-	}
-
-	uint32_t InputEventHandler::GetKey() const
-	{
-		Locker locker(_lock);
-		return _key;
-	}
-
-	void InputEventHandler::SetKey(uint32_t a_key)
-	{
-		Locker locker(_lock);
-		_key = a_key;
-	}
-
-	InputEventHandler::InputEventHandler() :
-		_lock(),
-		_key(kInvalid)
-	{}
 
 	std::uint32_t InputEventHandler::GetGamepadIndex(RE::BSWin32GamepadDevice::Key a_key)
 	{
