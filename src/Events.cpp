@@ -62,13 +62,8 @@ namespace Events
 				continue;
 			}
 
-			auto ui = RE::UI::GetSingleton();
-			auto controlMap = RE::ControlMap::GetSingleton();
-			if (ui->GameIsPaused() || !controlMap->IsMovementControlsEnabled()) {
-				continue;
-			}
-
-			if (key == Settings::uDodgeKey) {
+			if (key == Settings::uDodgeKey )
+				{
 				Dodge();
 				break;
 			}
@@ -81,6 +76,14 @@ namespace Events
 	{
 		auto playerCharacter = RE::PlayerCharacter::GetSingleton();
 		auto playerControls = RE::PlayerControls::GetSingleton();
+
+		auto ui = RE::UI::GetSingleton();
+		auto controlMap = RE::ControlMap::GetSingleton();
+
+		if (ui->GameIsPaused() || !controlMap->IsMovementControlsEnabled() || !controlMap->IsLookingControlsEnabled() || ui->IsMenuOpen("Dialogue Menu") 
+			|| playerCharacter->GetSitSleepState() != RE::SIT_SLEEP_STATE::kNormal || playerCharacter->GetActorValue(RE::ActorValue::kStamina) <= 0) {
+			return;
+		}
 		
 		if (!playerCharacter || !playerControls)
 		{
